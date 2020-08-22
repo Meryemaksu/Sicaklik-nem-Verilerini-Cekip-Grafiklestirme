@@ -1,0 +1,47 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Node.js Arduino Dht11 Chart.js</title>
+</head>
+<body>
+<div style="color:#fff710;" align="center">
+    <p>
+        <h1>HOŞGELDİNİZ</h1>
+    </p>
+</div>
+<canvas id="myCanvas"> </canvas>
+<script src="https://www.gstatic.com/charts/loader.js" type="text/javascript"> </script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.min.js"></script>
+<script src="node_modules/jquery/dist/jquery.js"></script>
+<script src="/socket.io/socket.io.js" charset="utf-8"> </script>
+<script>
+    $(document).ready(function(){
+        let counter=0;
+        const socket = io();
+        var ctx = document.getElementById('myCanvas').getContext('2d');
+        var myChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: [],
+                datasets: [{
+                    label: "Sıcaklık Değeri",
+                    backgroundColor:'rgb(6,8,94)',
+                    borderColor:'rgb(41,128,185)',
+                    data:[]
+                }]
+            },
+            options: {}
+        });
+        socket.on('alldata', function(veri){
+            myChart.data.datasets.forEach(dataset => {
+                dataset.data.push(+veri);
+            });
+            myChart.data.labels.push(counter);
+            counter++;
+            myChart.update();
+        });
+    });
+</script>
+</body>
+</html>
